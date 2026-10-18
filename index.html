@@ -840,7 +840,14 @@
         else window.addEventListener('resize', resizeGlobe);
         resizeGlobe();
         if (!reduceMotion) {
-          const animateGlobe = () => { globeRotation += .00065; drawGlobe(); window.requestAnimationFrame(animateGlobe); };
+          let lastGlobeFrame = 0;
+          const animateGlobe = timestamp => {
+            const elapsed = lastGlobeFrame ? Math.min(timestamp - lastGlobeFrame, 50) : 0;
+            lastGlobeFrame = timestamp;
+            globeRotation += elapsed * .0004;
+            drawGlobe();
+            window.requestAnimationFrame(animateGlobe);
+          };
           window.requestAnimationFrame(animateGlobe);
         }
       }
